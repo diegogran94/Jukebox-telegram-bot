@@ -19,6 +19,5 @@ Para su uso es necesario crear los siguientes archivos:
 
 Contacto:
 
-- dieguete111@gmail.com
 - [Telegram](http://telegram.me/lIlllIIIlIlIIl)
 
