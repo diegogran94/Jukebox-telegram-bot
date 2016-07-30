@@ -1,0 +1,11 @@
+Estos son los comandos disponibles:
+
+/help - Muestra los comandos disponibles
+
+/add - Añade una cancion a la base de datos
+
+/play - Devuelve una cancion y permite puntuarla
+
+/top - Muestra las 5 canciones con mayor puntuación
+
+Si detectas algún error o tienes alguna sugerencia no dudes en contactar conmigo: @lIlllIIIlIlIIl

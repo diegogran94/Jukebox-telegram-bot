@@ -55,3 +55,10 @@ docs/_build/
 
 # PyBuilder
 target/
+
+#No hacer commit de la base de datos sqlite
+data.db
+
+#Archivos personales
+log.txt
+config.py
