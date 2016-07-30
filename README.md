@@ -14,8 +14,6 @@ Nombre del bot: [@Jukebox_bot](https://telegram.me/jukebox_bot)
 Para su uso es necesario crear los siguientes archivos:
 - **config.py** -> Contendrá el token para acceder a la api de telegram y el id del administrador(para ejecutar comandos restringidos) .
 - **log.txt** -> Donde se almacena todo lo que recibe el bot.
-- **musica.csv** -> Aqui estarán las canciones junto a su puntuación.
-- **usuarios.txt** -> Contendrá el id de cada usuario que ha usado el bot.
 
 Contacto:
 
