@@ -8,4 +8,6 @@ Estos son los comandos disponibles:
 
 /top - Muestra las 5 canciones con mayor puntuación
 
+También puedes mandarme un enlace en lugar de usar el comando /add
+
 Si detectas algún error o tienes alguna sugerencia no dudes en contactar conmigo: @lIlllIIIlIlIIl

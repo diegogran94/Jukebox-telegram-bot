@@ -81,6 +81,20 @@ def yt_title(link):
 	video_title = youtube.xpath("//span[@id='eow-title']/@title")
 	return ''.join(video_title)
 
+def add_song(song,message):
+	if yt_link in song:
+		song = song[len(yt_link):]
+		song = song[song.find('v'):]
+		song = song[:len(yt_example_id)]
+
+		if not existe_cancion(song):
+			inserta_cancion(song)
+			bot.reply_to( message, 'Nueva cancion añadida')
+		else:
+			bot.reply_to( message, 'Esa canción ya está almacenada')
+	else:
+		bot.reply_to( message, 'Enlace no válido')
+
 
 ################################################################################
 #COMANDOS
@@ -113,34 +127,28 @@ def command_hola(m):
 
 
 @bot.message_handler(commands=['add'])
-def command_aniade(m):
+def command_add(m):
 	#check_time(m)
 	cid = m.chat.id
 	msg = bot.send_message( cid, 'A continuación introduzca un enlace de Youtube válido', reply_markup=forceReply)
 	bot.register_next_step_handler(msg, process_add)
 
-def process_add(message):
+def process_add(m):
 	try:
-		cid = message.chat.id
-		song = message.text
+		cid = m.chat.id
+		song = m.text
 
-		if yt_link in song:
-			song = song[len(yt_link):]
-			song = song[song.find('v'):]
-			song = song[:len(yt_example_id)]
-
-			if not existe_cancion(song):
-				inserta_cancion(song)
-				bot.reply_to( message, 'Nueva cancion añadida')
-			else:
-				bot.reply_to( message, 'Esa canción ya está almacenada')
-		else:
-			bot.reply_to( message, 'Enlace no válido')
+		add_song(song,m)
 
 	except Exception as e:
-		bot.reply_to(message, 'Ha habido un error')
+		bot.reply_to(m, 'Ha habido un error')
 		print e
 
+@bot.message_handler(func=lambda msg: yt_link in msg.text)
+def pasive_add(m):
+	cid = m.chat.id
+
+	add_song(m.text,m)
 
 
 @bot.message_handler(commands=['play'])
@@ -160,7 +168,6 @@ def command_play(m):
 	bot.register_next_step_handler(msg, process_rate)
 
 
-
 def process_rate(message):
 	try:
 		chat_id = message.chat.id
@@ -172,7 +179,7 @@ def process_rate(message):
 		prev_link = None
 		bot.reply_to(message, 'Almacenada puntuacion: '+ str(rate), reply_markup=hideBoard)
 	except Exception as e:
-		bot.reply_to(message, 'oooops')
+		bot.reply_to(message, 'Ha habido un error')
 
 
 @bot.message_handler(commands=['reset_rate'])
