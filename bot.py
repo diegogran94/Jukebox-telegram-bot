@@ -21,9 +21,10 @@ tiempo_arranque = int(time.time())
 
 log_filename = 'log.txt'
 
-yt_link = 'https://www.youtube.com/watch?'
-yt_example = 'https://www.youtube.com/watch?v=AeszddU2VyI'
-yt_example_id = yt_example[len(yt_link):]
+yt_link = 'https://www.youtube.com/watch?v='
+yt_link_mobile = 'https://youtu.be/'
+
+len_id_link = 11
 
 #Aqui se guarda el link de la cancion para pasarla a la
 #funcion que le da una puntuacion
@@ -37,10 +38,6 @@ happy_emoji = u'\U0001f604'
 
 emojis = {dislike_emoji:-1,like_emoji:1,like_emoji+like_emoji:2}
 
-#keyboard
-#rateSelect = types.ReplyKeyboardMarkup(one_time_keyboard=True,resize_keyboard=True)
-#rateSelect.add(dislike_emoji, like_emoji, like_emoji+like_emoji)
-#hideBoard = types.ReplyKeyboardHide()
 
 rateSelect = types.InlineKeyboardMarkup()
 rateSelect.add(types.InlineKeyboardButton(dislike_emoji,callback_data="-1"),
@@ -86,14 +83,29 @@ def yt_title(link):
 	video_title = youtube.xpath("//span[@id='eow-title']/@title")
 	return ''.join(video_title)
 
-def add_song(song,message):
-	if yt_link in song:
-		song = song[len(yt_link):]
-		song = song[song.find('v'):]
-		song = song[:len(yt_example_id)]
+def is_a_yt_link(link):
+	return (yt_link in link) or (yt_link_mobile in link)
 
-		if not existe_cancion(song):
-			inserta_cancion(song)
+def add_song(song,message):
+
+	valid_link = False
+
+	song_link = song
+
+	if yt_link in song:
+		song_link = song_link[len(yt_link):]
+		song_link = song_link[:len_id_link]
+		valid_link = True
+
+	if yt_link_mobile in song_link:
+		song_link = song_link[len(yt_link_mobile):]
+		song_link = song_link[:len_id_link]
+		valid_link = True
+
+	if valid_link:
+		if not existe_cancion(song_link):
+			title = yt_title(song)
+			inserta_cancion(song_link,title)
 			bot.reply_to( message, 'Nueva cancion añadida')
 		else:
 			bot.reply_to( message, 'Esa canción ya está almacenada')
@@ -149,7 +161,7 @@ def process_add(m):
 		bot.reply_to(m, 'Ha habido un error')
 		print e
 
-@bot.message_handler(func=lambda msg: yt_link in msg.text)
+@bot.message_handler(func=lambda msg: is_a_yt_link(msg.text))
 def pasive_add(m):
 	cid = m.chat.id
 
@@ -174,22 +186,12 @@ def command_play(m):
 
 @bot.callback_query_handler(func=lambda call: True)
 def  test_callback(call):
-	global prev_link
-	rate = int(call.data)
-	cambiar_puntuacion(prev_link[0],prev_link[1]+rate)
-	prev_link = None
-	bot.edit_message_text("Puntuacion guardada ("+str(rate)+")",chat_id=call.message.chat.id,message_id=call.message.message_id)
-
-def process_rate(message):
 	try:
-		chat_id = message.chat.id
 		global prev_link
-		key = message.text
-		rate = emojis[key]
-
+		rate = int(call.data)
 		cambiar_puntuacion(prev_link[0],prev_link[1]+rate)
 		prev_link = None
-		bot.reply_to(message, 'Almacenada puntuacion: '+ str(rate))
+		bot.edit_message_text("Puntuacion guardada ("+str(rate)+")",chat_id=call.message.chat.id,message_id=call.message.message_id)
 	except Exception as e:
 		bot.reply_to(message, 'Ha habido un error')
 
@@ -215,17 +217,7 @@ def command_reset_all(m):
 	else:
 		bot.send_message(cid, 'No puedes utilizar este comando')
 
-# @bot.message_handler(commands=['madd'])
-# def command_maniade(m):
-# 	#check_time(m)
-# 	cid = m.chat.id
-# 	if str(cid) == admin:
-# 		newlink = m.text[m.text.find(" ")+1:] #Eliminamos /add
-# 		print newlink
-# 		for word in newlink.split():
-# 			add_song(word,m)
-# 	else:
-# 		bot.send_message(cid, 'No puedes utilizar este comando')
+
 
 @bot.message_handler(commands=['top'])
 def command_top(m):
@@ -238,8 +230,8 @@ def command_top(m):
 			cont = 0
 			for ele in top_lista_sorted:
 				cont += 1
-				salida += '|' + str(ele[1]) +'| '+ yt_title(yt_link+ele[0])  \
-				+ " " + yt_link+ele[0]  + '\n'
+				salida += '|' + str(ele[1]) +'| '+ ele[2]  \
+				+ " (" + yt_link+ele[0]  + ')\n'
 
 			bot.send_message(cid, salida, disable_web_page_preview=True)
 		else:
@@ -251,5 +243,4 @@ def command_top(m):
 
 ################################################################################
 
-#Peticiones
-bot.polling(none_stop=True) # Con esto, le decimos al bot que siga funcionando incluso si encuentra algún fallo.
+bot.polling(none_stop=True)

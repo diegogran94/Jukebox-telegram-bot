@@ -25,13 +25,13 @@ def elegir_cancion_rand():
 
         return c.fetchone()
 
-def inserta_cancion(url):
+def inserta_cancion(url,title):
 
     con = sqlite3.connect('data.db')
 
     with con:
         c = con.cursor()
-        c.execute("insert into canciones values(?,0)",(url,))
+        c.execute("insert into canciones values(?,0,?)",(url,title))
 
 def cambiar_puntuacion(url,rate):
 
@@ -76,6 +76,3 @@ def inserta_usuario_nuevo(id_usuario, first_name, last_name, username):
 
         if c.fetchone() is None:
             c.execute("insert into usuarios values(?,?,?,?)",(id_usuario, first_name, last_name, username))
-
-if __name__ == '__main__':
-    inserta_usuario_nuevo(12345,"Pepe","AA","@lele")
