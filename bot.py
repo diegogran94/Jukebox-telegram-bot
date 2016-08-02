@@ -38,10 +38,15 @@ happy_emoji = u'\U0001f604'
 emojis = {dislike_emoji:-1,like_emoji:1,like_emoji+like_emoji:2}
 
 #keyboard
-rateSelect = types.ReplyKeyboardMarkup(one_time_keyboard=True,resize_keyboard=True)
-rateSelect.add(dislike_emoji, like_emoji, like_emoji+like_emoji)
+#rateSelect = types.ReplyKeyboardMarkup(one_time_keyboard=True,resize_keyboard=True)
+#rateSelect.add(dislike_emoji, like_emoji, like_emoji+like_emoji)
+#hideBoard = types.ReplyKeyboardHide()
 
-hideBoard = types.ReplyKeyboardHide()
+rateSelect = types.InlineKeyboardMarkup()
+rateSelect.add(types.InlineKeyboardButton(dislike_emoji,callback_data="-1"),
+			types.InlineKeyboardButton(like_emoji,callback_data="+1"),
+			types.InlineKeyboardButton(like_emoji+like_emoji,callback_data="+2"))
+
 
 forceReply = types.ForceReply()
 
@@ -165,8 +170,15 @@ def command_play(m):
 	bot.send_message( cid, yt_link+rand_link[0])
 
 	msg = bot.send_message(cid, "Puntua esta cancion:", reply_markup=rateSelect)
-	bot.register_next_step_handler(msg, process_rate)
 
+
+@bot.callback_query_handler(func=lambda call: True)
+def  test_callback(call):
+	global prev_link
+	rate = int(call.data)
+	cambiar_puntuacion(prev_link[0],prev_link[1]+rate)
+	prev_link = None
+	bot.edit_message_text("Puntuacion guardada ("+str(rate)+")",chat_id=call.message.chat.id,message_id=call.message.message_id)
 
 def process_rate(message):
 	try:
@@ -177,7 +189,7 @@ def process_rate(message):
 
 		cambiar_puntuacion(prev_link[0],prev_link[1]+rate)
 		prev_link = None
-		bot.reply_to(message, 'Almacenada puntuacion: '+ str(rate), reply_markup=hideBoard)
+		bot.reply_to(message, 'Almacenada puntuacion: '+ str(rate))
 	except Exception as e:
 		bot.reply_to(message, 'Ha habido un error')
 
