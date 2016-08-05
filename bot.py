@@ -177,23 +177,21 @@ def command_play(m):
 	if rand_link is None:
 		bot.send_message(cid, "No hay canciones disponibles, puedes añadir una usando /add")
 		return
-	global prev_link
-	prev_link = rand_link
-	bot.send_message( cid, yt_link+rand_link[0])
+	bot.send_message( cid, yt_link+rand_link[0],reply_markup=rateSelect)
 
-	msg = bot.send_message(cid, "Puntua esta cancion:", reply_markup=rateSelect)
+	#bot.send_message(cid, "Puntua esta cancion:", reply_markup=rateSelect)
 
 
 @bot.callback_query_handler(func=lambda call: True)
 def  test_callback(call):
 	try:
-		global prev_link
+		prev_link = call.message.text[len(yt_link):]
 		rate = int(call.data)
-		cambiar_puntuacion(prev_link[0],prev_link[1]+rate)
-		prev_link = None
-		bot.edit_message_text("Puntuacion guardada ("+str(rate)+")",chat_id=call.message.chat.id,message_id=call.message.message_id)
+		cambiar_puntuacion(prev_link,rate)
+		bot.edit_message_text(call.message.text,chat_id=call.message.chat.id,message_id=call.message.message_id)
+		bot.reply_to(call.message,"Puntuacion guardada ("+str(rate)+")")
 	except Exception as e:
-		bot.reply_to(message, 'Ha habido un error')
+		bot.reply_to(call.message, 'Ha habido un error')
 
 
 @bot.message_handler(commands=['reset_rate'])
