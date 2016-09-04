@@ -106,11 +106,11 @@ def add_song(song,message):
 		if not existe_cancion(song_link):
 			title = yt_title(song)
 			inserta_cancion(song_link,title)
-			bot.reply_to( message, 'Nueva cancion añadida')
+			bot.reply_to( message, 'New song added')
 		else:
-			bot.reply_to( message, 'Esa canción ya está almacenada')
+			bot.reply_to( message, 'This song is already stored')
 	else:
-		bot.reply_to( message, 'Enlace no válido')
+		bot.reply_to( message, 'Invalid link')
 
 
 ################################################################################
@@ -120,8 +120,8 @@ def add_song(song,message):
 @bot.message_handler(commands=['start'])
 def command_start(m):
 	cid = m.chat.id
-	bot.send_message( cid, "Hola "+m.from_user.first_name+", soy Jukebox bot, usa\
-	 /help para ver una lista de todas las ordenes disponibles. (EN PRUEBAS)")
+	bot.send_message( cid, "Hello "+m.from_user.first_name+", I'm Jukebox bot, use\
+	 /help to view the list of available commands. (TESTING)")
 	inserta_usuario_nuevo(m.from_user.id, m.from_user.first_name, m.from_user.last_name, m.from_user.username)
 
 @bot.message_handler(commands=['help'])
@@ -133,7 +133,7 @@ def command_help(m):
 		bot.send_message(cid,mensaje)
 
 	except Exception as e:
-		bot.reply_to(m,'Se ha producido un error, intentelo mas tarde')
+		bot.reply_to(m,'An error has occurred. Please, try it later')
 
 @bot.message_handler(commands=['ping'])
 def command_hola(m):
@@ -147,7 +147,7 @@ def command_hola(m):
 def command_add(m):
 	#check_time(m)
 	cid = m.chat.id
-	msg = bot.send_message( cid, 'A continuación introduzca un enlace de Youtube válido', reply_markup=forceReply)
+	msg = bot.send_message( cid, 'Now, enter a valid youtube link', reply_markup=forceReply)
 	bot.register_next_step_handler(msg, process_add)
 
 def process_add(m):
@@ -158,7 +158,7 @@ def process_add(m):
 		add_song(song,m)
 
 	except Exception as e:
-		bot.reply_to(m, 'Ha habido un error')
+		bot.reply_to(m, 'There was an error')
 		print e
 
 @bot.message_handler(func=lambda msg: is_a_yt_link(msg.text))
@@ -175,7 +175,7 @@ def command_play(m):
 
 	rand_link = elegir_cancion_rand()
 	if rand_link is None:
-		bot.send_message(cid, "No hay canciones disponibles, puedes añadir una usando /add")
+		bot.send_message(cid, "There are no songs available, you can add them using /add")
 		return
 	bot.send_message( cid, yt_link+rand_link[0],reply_markup=rateSelect)
 
@@ -189,9 +189,9 @@ def  test_callback(call):
 		rate = int(call.data)
 		cambiar_puntuacion(prev_link,rate)
 		bot.edit_message_text(call.message.text,chat_id=call.message.chat.id,message_id=call.message.message_id)
-		bot.reply_to(call.message,"Puntuacion guardada ("+str(rate)+")")
+		bot.reply_to(call.message,"Score added ("+str(rate)+")")
 	except Exception as e:
-		bot.reply_to(call.message, 'Ha habido un error')
+		bot.reply_to(call.message, 'There was an error')
 
 
 @bot.message_handler(commands=['reset_rate'])
@@ -200,9 +200,9 @@ def command_reset_rate(m):
 	cid = m.chat.id
 	if str(cid) == admin:
 		limpiar_rate()
-		bot.send_message(cid, 'Las puntuaciones han sido borradas')
+		bot.send_message(cid, 'Scores has been deleted')
 	else:
-		bot.send_message(cid, 'No puedes utilizar este comando')
+		bot.send_message(cid, 'You can\'t use this command')
 
 
 @bot.message_handler(commands=['reset_all'])
@@ -211,9 +211,9 @@ def command_reset_all(m):
 	cid = m.chat.id
 	if str(cid) == admin:
 		limpiar_canciones()
-		bot.send_message(cid, 'Base de datos borrada')
+		bot.send_message(cid, 'Database deleted')
 	else:
-		bot.send_message(cid, 'No puedes utilizar este comando')
+		bot.send_message(cid, 'You can\'t use this command')
 
 
 
@@ -224,7 +224,7 @@ def command_top(m):
 		cid = m.chat.id
 		top_lista_sorted = devolver_canciones_orden()
 		if top_lista_sorted:
-			salida = 'Top5 de canciones: \n'
+			salida = 'Top5 songs: \n'
 			cont = 0
 			for ele in top_lista_sorted:
 				cont += 1
@@ -233,9 +233,9 @@ def command_top(m):
 
 			bot.send_message(cid, salida, disable_web_page_preview=True)
 		else:
-			bot.send_message(cid, "No hay canciones disponibles, puedes añadir una usando /add")
+			bot.send_message(cid, "There are no songs available, you can add them using /add")
 	except Exception as e:
-		bot.reply_to(m,"Ha habido un error")
+		bot.reply_to(m,"There was an error")
 		print e
 
 
