@@ -189,7 +189,7 @@ def  test_callback(call):
 		rate = int(call.data)
 		cambiar_puntuacion(prev_link,rate)
 		bot.edit_message_text(call.message.text,chat_id=call.message.chat.id,message_id=call.message.message_id)
-		bot.reply_to(call.message,"Score added ("+str(rate)+")")
+		bot.reply_to(call.message,"Song rated ("+str(rate)+")")
 	except Exception as e:
 		bot.reply_to(call.message, 'There was an error')
 
@@ -200,7 +200,7 @@ def command_reset_rate(m):
 	cid = m.chat.id
 	if str(cid) == admin:
 		limpiar_rate()
-		bot.send_message(cid, 'Scores has been deleted')
+		bot.send_message(cid, 'Rates been deleted')
 	else:
 		bot.send_message(cid, 'You can\'t use this command')
 
