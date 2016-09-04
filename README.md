@@ -13,7 +13,7 @@ Bot name: [@Jukebox_bot](https://telegram.me/jukebox_bot)
 
 For the proper usage you have to create the following files:
 - **config.py** -> It will contain the token for accesing the telegram bot api and the admin ID (for restricted commands).
-- **log.txt** -> IT reccords all events that arrive to the bot.
+- **log.txt** -> It reccords all events that arrive to the bot.
 
 Contact:
 
