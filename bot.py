@@ -17,7 +17,6 @@ import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
-tiempo_arranque = int(time.time())
 
 log_filename = 'log.txt'
 
@@ -72,10 +71,6 @@ bot.set_update_listener(listener)
 
 ################################################################################
 #FUNCIONES
-
-#Comprueba si es un mensaje antiguo para no ejecutarlo
-def check_time(m):
-	return tiempo_arranque > m.date
 
 
 def yt_title(link):
@@ -137,15 +132,12 @@ def command_help(m):
 
 @bot.message_handler(commands=['ping'])
 def command_hola(m):
-	#check_time(m)
-
 	cid = m.chat.id
 	bot.send_message( cid, "Pong"+ ' ' + happy_emoji)
 
 
 @bot.message_handler(commands=['add'])
 def command_add(m):
-	#check_time(m)
 	cid = m.chat.id
 	msg = bot.send_message( cid, 'Now, enter a valid youtube link', reply_markup=forceReply)
 	bot.register_next_step_handler(msg, process_add)
@@ -170,7 +162,6 @@ def pasive_add(m):
 
 @bot.message_handler(commands=['play'])
 def command_play(m):
-	#check_time(m)
 	cid = m.chat.id
 
 	rand_link = elegir_cancion_rand()
@@ -196,7 +187,6 @@ def  test_callback(call):
 
 @bot.message_handler(commands=['reset_rate'])
 def command_reset_rate(m):
-	#check_time(m)
 	cid = m.chat.id
 	if str(cid) == admin:
 		limpiar_rate()
@@ -207,7 +197,6 @@ def command_reset_rate(m):
 
 @bot.message_handler(commands=['reset_all'])
 def command_reset_all(m):
-	#check_time(m)
 	cid = m.chat.id
 	if str(cid) == admin:
 		limpiar_canciones()
@@ -220,7 +209,6 @@ def command_reset_all(m):
 @bot.message_handler(commands=['top'])
 def command_top(m):
 	try:
-		#check_time(m)
 		cid = m.chat.id
 		top_lista_sorted = devolver_canciones_orden()
 		if top_lista_sorted:
@@ -242,6 +230,8 @@ def command_top(m):
 ################################################################################
 
 def main_loop():
+    #Comprueba si es un mensaje antiguo para no ejecutarlo
+    bot.skip_pending = True
     bot.polling(True)
     while 1:
         time.sleep(3)
