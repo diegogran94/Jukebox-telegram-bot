@@ -15,6 +15,13 @@ For the proper usage you have to create the following files:
 - **config.py** -> It will contain the token for accesing the telegram bot api and the admin ID (for restricted commands).
 - **log.txt** -> It reccords all events that arrive to the bot.
 
+## Create sqlite database
+
+To create the sqlite database and tables use:
+```
+sqlite3 data.db < init_db.sql
+```
+
 Contact:
 
 - [Telegram](http://telegram.me/lIlllIIIlIlIIl)
