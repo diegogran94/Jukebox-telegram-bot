@@ -1,13 +1,13 @@
-Estos son los comandos disponibles:
+These are the available commands:
 
-/help - Muestra los comandos disponibles
+/help - Displays all other commands
 
-/add - Añade una cancion a la base de datos
+/add - Adds a song to the database
 
-/play - Devuelve una cancion y permite puntuarla
+/play - Returns a song and lets you to rate it
 
-/top - Muestra las 5 canciones con mayor puntuación
+/top - Returns top 5 songs
 
-También puedes mandarme un enlace directamente en lugar de usar el comando /add
+You can send the link without using /add command too.
 
-Si detectas algún error o tienes alguna sugerencia no dudes en contactar conmigo: @lIlllIIIlIlIIl
+If you see any bug or want to suggest anything, contact me in telegram: @lIlllIIIlIlIIl

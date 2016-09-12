@@ -1,21 +1,21 @@
 # Jukebox-telegram-bot
 
-Bot de Telegram programado en python que recomienda canciones y permite puntuarlas. También es posible añadir canciones para que otras personas puedan escuharlas y puntuarlas.
+Telegram bot writen in python wich recommends you songs and lets you give them score. Also, you can add songs for others to hear and rate them.
 
-Nombre del bot: [@Jukebox_bot](https://telegram.me/jukebox_bot)
+Bot name: [@Jukebox_bot](https://telegram.me/jukebox_bot)
 
-## Comandos disponibles
+## Available commands
 
-- **play** -> Devuelve una cancion y permite puntuarla.
-- **add** -> Añade una cancion a la base de datos
-- **help** -> Muestra los comandos disponibles
-- **top** -> Muestra las 5 mejores canciones
+- **play** -> Returns a song and lets you rate it.
+- **add** -> Add a song to the database.
+- **help** -> Shows available commands
+- **top** -> Returns top 5 songs
 
-Para su uso es necesario crear los siguientes archivos:
-- **config.py** -> Contendrá el token para acceder a la api de telegram y el id del administrador(para ejecutar comandos restringidos) .
-- **log.txt** -> Donde se almacena todo lo que recibe el bot.
+For the proper usage you have to create the following files:
+- **config.py** -> It will contain the token for accesing the telegram bot api and the admin ID (for restricted commands).
+- **log.txt** -> It reccords all events that arrive to the bot.
 
-Contacto:
+Contact:
 
 - [Telegram](http://telegram.me/lIlllIIIlIlIIl)
 
