@@ -22,6 +22,14 @@ To create the sqlite database and tables use:
 sqlite3 data.db < init_db.sql
 ```
 
+## Create config.py file
+
+The config.py file must have de following structure:
+```
+TOKEN='your_bot_token'
+admin='admin_id'
+```
+
 Contact:
 
 - [Telegram](http://telegram.me/lIlllIIIlIlIIl)
