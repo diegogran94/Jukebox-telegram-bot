@@ -34,14 +34,15 @@ prev_link = None
 like_emoji = u'\U0001F44D'
 dislike_emoji = u'\U0001F44E'
 happy_emoji = u'\U0001f604'
+dot_emoji = u'\U000026AB'
 
 emojis = {dislike_emoji:-1,like_emoji:1,like_emoji+like_emoji:2}
 
 
 rateSelect = types.InlineKeyboardMarkup()
 rateSelect.add(types.InlineKeyboardButton(dislike_emoji,callback_data="-1"),
-			types.InlineKeyboardButton(like_emoji,callback_data="+1"),
-			types.InlineKeyboardButton(like_emoji+like_emoji,callback_data="+2"))
+			types.InlineKeyboardButton(dot_emoji,callback_data="0"),
+			types.InlineKeyboardButton(like_emoji,callback_data="+1"))
 
 
 forceReply = types.ForceReply()
@@ -216,10 +217,10 @@ def command_top(m):
 			cont = 0
 			for ele in top_lista_sorted:
 				cont += 1
-				salida += '|' + str(ele[1]) +'| '+ ele[2]  \
-				+ " (" + yt_link+ele[0]  + ')\n'
+				salida += '|*' + str(ele[1]) +'*| '+ '[' + ele[2]  \
+				+ '](' + yt_link+ele[0]  + ')\n'
 
-			bot.send_message(cid, salida, disable_web_page_preview=True)
+			bot.send_message(cid, salida, disable_web_page_preview=True, parse_mode='Markdown')
 		else:
 			bot.send_message(cid, "There are no songs available, you can add them using /add")
 	except Exception as e:
