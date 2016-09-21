@@ -47,6 +47,10 @@ rateSelect.add(types.InlineKeyboardButton(dislike_emoji,callback_data="-1"),
 
 forceReply = types.ForceReply()
 
+#Play
+users_who_voted = {}
+actual_callback = {}
+
 bot = telebot.TeleBot(TOKEN)
 
 ################################################################################
@@ -54,19 +58,24 @@ bot = telebot.TeleBot(TOKEN)
 #Listener
 def listener(messages):
 	for m in messages:
-		user_id = m.from_user.id
-		name = m.from_user.first_name
-		last_name = m.from_user.last_name
-		username = m.from_user.username
-		hour = time.strftime("%H:%M:%S")
-		date = time.strftime("%d/%m/%y")
-		information = "["+ str(date) + ' ' + str(hour) + ' ' +str(name)  + ' ' + \
-		str(last_name) + ' ' + str(user_id) + ' @' + str(username) + "]: " + m.text
+		cid = m.chat.id
+		#Si (estoy en un grupo y recibo un comando) o estoy en un chat privado
+		#Esto evita que el bot almacene todas las conversaciones del grupo
+		if (m.chat.type == 'group' and m.text.startswith("/")) or m.chat.type == 'private':
+			if m.content_type == 'text':
+				user_id = m.from_user.id
+				name = m.from_user.first_name
+				last_name = m.from_user.last_name
+				username = m.from_user.username
+				hour = time.strftime("%H:%M:%S")
+				date = time.strftime("%d/%m/%y")
+				information = "["+ str(date) + ' ' + str(hour) + ' ' +str(name)  + ' ' + \
+				str(last_name) + ' ' + str(user_id) + ' @' + str(username) + "]: " + m.text
 
-		aux = open(log_filename, 'a')
-		aux.write( str(information) + "\n")
-		aux.close()
-		print information
+				aux = open(log_filename, 'a')
+				aux.write( str(information) + "\n")
+				aux.close()
+				print information
 
 bot.set_update_listener(listener)
 
@@ -135,6 +144,11 @@ def command_help(m):
 def command_hola(m):
 	cid = m.chat.id
 	bot.send_message( cid, "Pong"+ ' ' + happy_emoji)
+	
+@bot.message_handler(commands=['chatid'])
+def command_chatid(m):
+	cid = m.chat.id
+	bot.send_message( cid, cid)
 
 
 @bot.message_handler(commands=['add'])
@@ -169,23 +183,42 @@ def command_play(m):
 	if rand_link is None:
 		bot.send_message(cid, "There are no songs available, you can add them using /add")
 		return
-	bot.send_message( cid, yt_link+rand_link[0],reply_markup=rateSelect)
+	msg = bot.send_message( cid, yt_link+rand_link[0],reply_markup=rateSelect)
+	users_who_voted[cid] = []
+	actual_callback[cid] = msg.message_id
 
-	#bot.send_message(cid, "Puntua esta cancion:", reply_markup=rateSelect)
 
-
-@bot.callback_query_handler(func=lambda call: True)
-def  test_callback(call):
+#Recibe la ultima callback
+@bot.callback_query_handler(func=lambda call: actual_callback[call.message.chat.id]==call.message.message_id)
+def play_callback(call):
 	try:
 		prev_link = call.message.text[len(yt_link):]
 		rate = int(call.data)
-		cambiar_puntuacion(prev_link,rate)
-		bot.edit_message_text(call.message.text,chat_id=call.message.chat.id,message_id=call.message.message_id)
-		bot.reply_to(call.message,"Song rated ("+str(rate)+")")
+		
+		actual_user = call.from_user
+		actual_chat = call.message.chat
+		
+		if not users_who_voted.has_key(actual_chat.id):
+			users_who_voted[actual_chat.id] = []
+		
+		if actual_user.id in users_who_voted[actual_chat.id]:
+			bot.answer_callback_query(call.id,"Ya has votado")
+		else:
+			users_who_voted[actual_chat.id].append(actual_user.id)
+			cambiar_puntuacion(prev_link,rate)		
+			#bot.edit_message_text(call.message.text,chat_id=call.message.chat.id,message_id=call.message.message_id,reply_markup=rateSelect)
+			bot.answer_callback_query(call.id,"Song rated ("+str(rate)+")")
+			#bot.reply_to(call.message,"Song rated ("+str(rate)+")") #Para debug
 	except Exception as e:
 		bot.reply_to(call.message, 'There was an error')
+		print(e)
 
-
+#Recibe las callbacks antiguas
+@bot.callback_query_handler(func=lambda call: actual_callback[call.message.chat.id]!=call.message.message_id)
+def play_pass_callback(call):
+	bot.answer_callback_query(call.id,"No puedes votar canciones antiguas")
+	
+	
 @bot.message_handler(commands=['reset_rate'])
 def command_reset_rate(m):
 	cid = m.chat.id
