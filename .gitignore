@@ -64,3 +64,4 @@ log.txt
 config.py
 
 .vscode
+.env

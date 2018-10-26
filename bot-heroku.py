@@ -17,8 +17,8 @@ def error(bot, update, error):
 
 if __name__ == "__main__":
     # Set these variable to the appropriate values
-    TOKEN =  S3Connection(os.environ['TOKEN_BOT'])
-    NAME = S3Connection(os.environ['APP_NAME'])
+    TOKEN =  os.environ.get('TOKEN_BOT')
+    NAME = os.environ.get('APP_NAME')
 
     # Port is given by Heroku
     PORT = os.environ.get('PORT')
