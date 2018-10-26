@@ -1,3 +1,4 @@
 pyTelegramBotAPI
 lxml
 python-telegram-bot
+boto
